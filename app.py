@@ -9,10 +9,6 @@ SECRET_KEY = os.urandom(24).hex()
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
-app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-
 @app.route("/", methods=["GET", "POST"])
 def index():
     """Count the answers and manage the home"""
