@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}Pregunta {{ q_num }}{% endblock title %}
+
+{% block main %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-8 col-md-10">
+
+            {% if error %}
+                <div class="alert alert-danger" role="alert">{{ error }}</div>
+            {% endif %}
+
+            <div class="progress mb-4" role="progressbar" aria-label="Progreso del Cuestionario" aria-valuenow="{{ q_num }}" aria-valuemin="1" aria-valuemax="{{ total_questions }}">
+                {% set progress_percent = (q_num / total_questions) * 100 %}
+                <div class="progress-bar" style="width: {{ progress_percent }}%">
+                    {{ q_num }}/{{ total_questions }}
+                </div>
+            </div>
+
+            <h2 class="mb-4">Pregunta {{ q_num }}:</h2>
+            <p class="lead">{{ question.text_es }}</p>
+
+            <form action="/question/{{ q_num + 1 }}" method="post">
+
+                <div class="list-group mb-4">
+                    {% for option in question.options %}
+                        <label class="list-group-item">
+                            <input class="form-check-input me-3" type="radio" name="option" value="{{ loop.index0 }}" required>
+                            {{ option.label }}
+                        </label>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-{{ 'danger' if is_last_question else 'primary' }} btn-lg shadow w-100">
+                    {% if is_last_question %}
+                        Ver Resultados
+                    {% else %}
+                        Siguiente
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock main %}

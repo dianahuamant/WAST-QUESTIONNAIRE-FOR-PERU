@@ -1,0 +1,12 @@
+# Archivos y directorios de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Directorios de entorno virtual 
+venv/
+.venv/
+
+# Carpetas de sesión temporal
+instance/
