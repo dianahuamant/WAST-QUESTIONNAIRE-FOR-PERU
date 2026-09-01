@@ -2,11 +2,11 @@
 
 ## 📝 Project Description
 
-This project is an interactive **Flask web application** implementing the **Woman Abuse Screening Tool (WAST)**.  
+This project is an interactive, lightweight **static web application** implementing the **Woman Abuse Screening Tool (WAST)**.  
 It was developed to provide a **fast, reliable, and modern** tool to assess intimate partner violence risk, especially adapted to the **Peruvian context**.
 
 Many existing NGO platforms in Peru fail due to accessibility or technical issues — some crash before completing the survey, while others only offer outdated PDFs.  
-This project aims to deliver a **robust, accessible, and always-available digital tool** for self-assessment and early detection.
+This project aims to deliver a **robust, accessible, and always-available digital tool** for self-assessment and early detection, hosted directly on **GitHub Pages**.
 
 ---
 
@@ -30,61 +30,48 @@ Based on:
 
 ## 💻 Architecture and Technical Design
 
-Built using **Flask (Python)** and deployed with **Gunicorn** for production environments.  
-All questionnaire logic and scoring are handled in-memory using session variables, ensuring privacy and eliminating the need for persistent databases.
+Built as a serverless static web application using **HTML5, Vanilla JavaScript (ES6+), and Bootstrap 5.3.3**.  
+The entire application runs 100% client-side inside the user's browser, eliminating backend server dependencies, lowering latency, and maximizing user privacy.
 
-### Main Files
+### Main File
 
 | File | Description |
 |------|--------------|
-| **app.py** | Main application logic: routes, session handling, and score calculation. |
-| **data.py** | Contains static data: `QUESTIONS`, `RISK_LEVELS`, and `SAFETY_PLAN`. |
-| **requirements.txt** | Dependencies list (Flask, Gunicorn, matplotlib). |
+| **index.html** | Self-contained single-page application holding the UI layout, Bootstrap styling, survey dataset (`QUESTIONS`, `RISK_LEVELS`), and evaluation logic. |
 
 ---
 
 ## ⚙️ Key Design Decisions
 
-### 1. Anti-Skipping Protection
+### 1. Controlled Survey Flow
+- Application state is managed dynamically in memory via JavaScript.
+- Validates user input step-by-step, preventing premature access to evaluation results or skipping unanswered questions.
 
-A common problem in online surveys is URL manipulation to skip questions — this is critical in risk evaluations.
+### 2. Maximum Privacy and Anonymity
+- **100% Client-Side Processing**: No user responses are ever sent to, or stored on, remote servers or databases.
+- State is kept only in temporary browser memory and is completely wiped clean upon closing or refreshing the browser tab.
 
-- **Implementation:** In `/question/<int:num>`, sequential validation ensures no question can be skipped.  
-  If a user tries to jump from Q3 to Q8, they’re redirected to the first unanswered question.
-
-- **`/results` Route Locked:** Accessible only after all questions are completed.
-
----
-
-### 2. Privacy and Anonymity
-
-No personal data or login system is required.  
-All sessions are temporary, ensuring complete anonymity and privacy.  
-This design choice prioritizes safety and accessibility for all users.
-
----
-
-### 3. Accessibility and Reliability
-
-- Fully compatible with **mobile and desktop browsers**.  
-- Lightweight and fast thanks to **Flask + Gunicorn** setup.  
-- No external dependencies such as databases or authentication systems.
+### 3. High Availability and Zero Maintenance
+- Hosted on **GitHub Pages** for maximum uptime, high loading speed, and zero server management overhead.
+- Fully responsive design using Bootstrap 5.3.3, optimized for mobile phones and desktop displays.
 
 ---
 
 ## 🎯 Conclusion
 
-This project provides a **clinically validated, accessible, and context-aware screening tool for Peru**, addressing existing technical gaps and empowering women to assess risk safely and privately.
+This project provides a **clinically validated, accessible, and context-aware screening tool for Peru**, leveraging static web architecture to deliver an instant, secure, and private experience for users.
 
 ---
 
-## 🚀 How to Run the Project
+## 🚀 How to Run the Project Locally
 
-To run the project locally:
+Since this project has no backend dependencies, running it locally is simple:
+
+### Option 1: Direct File Access
+Double-click `index.html` or drag the file directly into any web browser.
+
+### Option 2: Local HTTP Server (Python)
+Run a local web server from your project terminal:
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Start the Flask app with Gunicorn
-gunicorn app:app
+python3 -m http.server 8000
