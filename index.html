@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Relación Tóxica?</title>
+
+    <!-- Bootstrap 5.3.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        :root {
+            --bs-primary: #800080;
+            --bs-primary-rgb: 128, 0, 128;
+            --bs-danger: #dc3545;
+            --bs-warning: #ffc107;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .btn-primary,
+        .progress-bar,
+        .bg-primary {
+            background-color: var(--bs-primary) !important;
+            border-color: var(--bs-primary) !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #6a006a !important;
+            border-color: #6a006a !important;
+        }
+
+        .text-primary {
+            color: var(--bs-primary) !important;
+        }
+
+        .d-none {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <main class="container py-4">
+
+        <!-- INICIO (Vista principal) -->
+        <div id="view-home" class="row justify-content-center mt-4">
+            <div class="col-lg-8 col-md-10">
+                <h1 class="text-center text-primary mb-4" style="font-size: 2rem;">
+                    ¡Veamos si tu relación realmente es tóxica o no! 🤔
+                </h1>
+
+                <div class="card p-4 shadow-sm">
+                    <h2 class="text-center mb-4">¿Estás lista para saber la verdad?</h2>
+
+                    <div class="alert alert-success mt-3" role="alert">
+                        <p class="mb-1"><strong>¡Esto es completamente ANÓNIMO!</strong></p>
+                        Tus respuestas no serán guardadas con información personal. ¡Tu seguridad es nuestra prioridad!
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button onclick="startQuiz()" class="btn btn-primary btn-lg shadow-lg w-75 mb-3">
+                            ¡Empecemos!
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 text-muted" style="font-size: 0.8em;">
+                    <p>Las preguntas de este cuestionario se han tomado de un estudio robusto y validado:</p>
+                    <cite>Fogarty, C. T., & Brown, J. B. (2002). Screening for abuse in Spanish-speaking women. The Journal of the American Board of Family Practice, 15(2), 101-111.</cite>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUESTIONARIO (Preguntas) -->
+        <div id="view-question" class="row justify-content-center mt-5 d-none">
+            <div class="col-lg-8 col-md-10">
+
+                <div id="alert-error" class="alert alert-danger d-none" role="alert">
+                    Debes seleccionar una opción para continuar.
+                </div>
+
+                <div class="progress mb-4" role="progressbar" aria-label="Progreso del Cuestionario">
+                    <div id="q-progress-bar" class="progress-bar" style="width: 0%">
+                        0/8
+                    </div>
+                </div>
+
+                <h2 class="mb-4" id="q-title">Pregunta 1:</h2>
+                <p class="lead" id="q-text"></p>
+
+                <form id="quiz-form" onsubmit="handleNext(event)">
+                    <div class="list-group mb-4" id="q-options">
+                        <!-- Opciones dinámicas -->
+                    </div>
+
+                    <button type="submit" id="q-btn-submit" class="btn btn-primary btn-lg shadow w-100">
+                        Siguiente
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- RESULTADOS -->
+        <div id="view-results" class="row justify-content-center mt-5 d-none">
+            <div class="col-lg-9 col-md-11">
+
+                <h1 id="res-title" class="mb-4 text-center"></h1>
+
+                <div id="res-card" class="card mb-5 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Diagnóstico Rápido:</h5>
+                        <p class="fs-4">Nivel Detectado: <span id="res-badge" class="badge"></span></p>
+                        <p class="card-text">Puntaje Obtenido: <strong id="res-score"></strong></p>
+                        <hr>
+                        <p class="lead" id="res-description"></p>
+                    </div>
+                </div>
+
+                <div id="res-safety-plan" class="d-none">
+                    <h2 class="mt-5 text-danger mb-3">Plan de Seguridad y Acción Inmediata 🚨</h2>
+                    <p class="text-muted">Estos pasos son clave para protegerte si la tensión escala. Léelos con atención y ponlos en práctica.</p>
+
+                    <ol class="list-group list-group-numbered mb-5" id="safety-plan-list">
+                        <!-- Lista del plan de seguridad -->
+                    </ol>
+                </div>
+
+                <div id="res-resources-section" class="d-none">
+                    <h2 class="mt-5 mb-3">Recursos de Ayuda y Orientación (Perú)</h2>
+
+                    <p class="text-danger lead">
+                        ¡IMPORTANTE! Puedes llamar a la 📞 <strong>Línea 100</strong> de inmediato y sin costo.
+                    </p>
+
+                    <ul class="list-group shadow-sm" id="resources-list">
+                        <!-- Lista de recursos -->
+                    </ul>
+                </div>
+
+                <div class="text-center mt-5">
+                    <div class="mb-3 d-grid gap-2">
+                        <button onclick="resetQuiz()" class="btn btn-secondary shadow">Volver a Empezar el Cuestionario</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eY1p2w8QvW6O6s9D" crossorigin="anonymous"></script>
+
+    <script>
+        const QUESTIONS = {
+            1: {
+                text_es: "¿En general, cómo describiría usted su relación con su pareja?",
+                options: [
+                    { label: "Mucha tensión", score: 2 },
+                    { label: "Alguna tensión", score: 1 },
+                    { label: "Sin tensión", score: 0 }
+                ]
+            },
+            2: {
+                text_es: "Usted y su pareja resuelven sus discusiones (argumentos) con...",
+                options: [
+                    { label: "Mucha dificultad", score: 2 },
+                    { label: "Alguna dificultad", score: 1 },
+                    { label: "Sin dificultad", score: 0 }
+                ]
+            },
+            3: {
+                text_es: "Al terminar las discusiones ¿usted se siente decaída o mal con usted misma?",
+                options: [
+                    { label: "Muchas veces", score: 2 },
+                    { label: "A veces", score: 1 },
+                    { label: "Nunca", score: 0 }
+                ]
+            },
+            4: {
+                text_es: "Las discusiones terminan en golpes, patadas, o empujones?",
+                options: [
+                    { label: "Muchas veces", score: 2 },
+                    { label: "A veces", score: 1 },
+                    { label: "Nunca", score: 0 }
+                ]
+            },
+            5: {
+                text_es: "¿Siente miedo de lo que su pareja diga o haga?",
+                options: [
+                    { label: "Muchas veces", score: 2 },
+                    { label: "A veces", score: 1 },
+                    { label: "Nunca", score: 0 }
+                ]
+            },
+            6: {
+                text_es: "¿Su pareja ha abusado de usted físicamente?",
+                options: [
+                    { label: "Muchas veces", score: 2 },
+                    { label: "A veces", score: 1 },
+                    { label: "Nunca", score: 0 }
+                ]
+            },
+            7: {
+                text_es: "¿Su pareja ha abusado de usted emocionalmente?",
+                options: [
+                    { label: "Muchas veces", score: 2 },
+                    { label: "A veces", score: 1 },
+                    { label: "Nunca", score: 0 }
+                ]
+            },
+            8: {
+                text_es: "¿Su pareja ha abusado de usted sexualmente?",
+                options: [
+                    { label: "Muchas veces", score: 2 },
+                    { label: "A veces", score: 1 },
+                    { label: "Nunca", score: 0 }
+                ]
+            }
+        };
+
+        const RISK_LEVELS = [
+            {
+                min_score: 0,
+                max_score: 3,
+                level: "Todo Chill / Prevención",
+                title: "¡Parece que tu relación está tranquila! ☀️",
+                color: "success",
+                description: "Tu resultado es bajo, ¡lo cual es genial! No detectamos señales de violencia. Recuerda siempre que la <strong>comunicación efectiva y clara</strong> es la mejor herramienta para una relación tranquila y sana. ¡Sigue así!",
+                resources: []
+            },
+            {
+                min_score: 4,
+                max_score: 6,
+                level: "¡Ojo Aquí! / Tensión y Control",
+                title: "¡Alerta! Hay <i>señales de humo</i> en tu relación.",
+                color: "warning",
+                description: "El puntaje sugiere que hay <strong>mucha tensión, dificultad para resolver problemas o control</strong>. Esto no es violencia <strong>física</strong>, pero son dinámicas tóxicas que pueden escalar. Busca hablar con alguien de muchísima confianza o con un profesional. ¡No dejes que se normalice!",
+                resources: [
+                    {
+                        name: "Centros de Emergencia Mujer (CEM)",
+                        contact: "Accede al directorio de atención legal y psicológica gratuita y presencial.<br>Recuerda que atienden las 24 horas del día, los 365 días del año.",
+                        link: "https://cdn.www.gob.pe/uploads/document/file/3650084/3487068-directorio-cemf-y-cemf-24hr-actualizado-julio-2025.pdf?v=1758557895"
+                    }
+                ]
+            },
+            {
+                min_score: 7,
+                max_score: 16,
+                level: "¡Peligro! / Violencia Detectada",
+                title: "¡DETENTE! Este resultado sugiere una situación de violencia de pareja.",
+                color: "danger",
+                description: "El puntaje es alto, lo que indica la presencia de <strong>miedo, abuso o agresión</strong>. ¡Tu seguridad y tu vida son lo más importante! No estás sola. Necesitas buscar apoyo o contactar a las líneas de ayuda <strong>inmediatamente</strong>.",
+                resources: [
+                    {
+                        name: "Centros de Emergencia Mujer (CEM)",
+                        contact: "Accede al directorio de atención legal y psicológica gratuita y presencial.<br>Recuerda que atienden las 24 horas del día, los 365 días del año.",
+                        link: "https://cdn.www.gob.pe/uploads/document/file/3650084/3487068-directorio-cemf-y-cemf-24hr-actualizado-julio-2025.pdf?v=1758557895"
+                    }
+                ]
+            }
+        ];
+
+        const SAFETY_PLAN = [
+            "Recuerda ir a tus <strong>'lugares seguros'</strong>, ya sea una persona, familiar, amistad o un lugar en sí.",
+            "Ten siempre a la mano tu <strong>DNI</strong> (Documento Nacional de Identidad).",
+            "No solo puedes llamar a la <strong>Línea 100</strong>, también hay <strong>Chat 100</strong> en caso prefieras escribir el link es: <a href='https://chat100.warminan.gob.pe/' target='_blank'>Chat 100</a>",
+            "Si ves o sientes algo raro, siempre <strong>documenta</strong>. La evidencia siempre ayuda: graba o toma fotos de forma segura. ¡Eso te ayudará muchísimo!"
+        ];
+
+        let currentQuestionNum = 1;
+        let userScores = {};
+        const totalQuestions = Object.keys(QUESTIONS).length;
+
+        function startQuiz() {
+            currentQuestionNum = 1;
+            userScores = {};
+            document.getElementById('view-home').classList.add('d-none');
+            document.getElementById('view-results').classList.add('d-none');
+            document.getElementById('view-question').classList.remove('d-none');
+            loadQuestion(1);
+        }
+
+        function loadQuestion(num) {
+            document.getElementById('alert-error').classList.add('d-none');
+            const qData = QUESTIONS[num];
+            
+            const percent = (num / totalQuestions) * 100;
+            const progressBar = document.getElementById('q-progress-bar');
+            progressBar.style.width = percent + '%';
+            progressBar.innerText = `${num}/${totalQuestions}`;
+
+            document.getElementById('q-title').innerText = `Pregunta ${num}:`;
+            document.getElementById('q-text').innerText = qData.text_es;
+
+            const optionsContainer = document.getElementById('q-options');
+            optionsContainer.innerHTML = '';
+            qData.options.forEach((opt) => {
+                const label = document.createElement('label');
+                label.className = 'list-group-item';
+                label.innerHTML = `
+                    <input class="form-check-input me-3" type="radio" name="option" value="${opt.score}" required>
+                    ${opt.label}
+                `;
+                optionsContainer.appendChild(label);
+            });
+
+            const submitBtn = document.getElementById('q-btn-submit');
+            if (num === totalQuestions) {
+                submitBtn.innerText = 'Ver Resultados';
+                submitBtn.className = 'btn btn-danger btn-lg shadow w-100';
+            } else {
+                submitBtn.innerText = 'Siguiente';
+                submitBtn.className = 'btn btn-primary btn-lg shadow w-100';
+            }
+        }
+
+        function handleNext(e) {
+            e.preventDefault();
+            const selected = document.querySelector('input[name="option"]:checked');
+            if (!selected) {
+                document.getElementById('alert-error').classList.remove('d-none');
+                return;
+            }
+
+            userScores[`q${currentQuestionNum}`] = parseInt(selected.value);
+
+            if (currentQuestionNum < totalQuestions) {
+                currentQuestionNum++;
+                loadQuestion(currentQuestionNum);
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('view-question').classList.add('d-none');
+            document.getElementById('view-results').classList.remove('d-none');
+
+            let totalScore = 0;
+            Object.values(userScores).forEach(val => totalScore += val);
+
+            let result = RISK_LEVELS.find(l => totalScore >= l.min_score && totalScore <= l.max_score) || RISK_LEVELS[0];
+
+            const resTitle = document.getElementById('res-title');
+            resTitle.className = `mb-4 text-center text-${result.color}`;
+            resTitle.innerHTML = result.title;
+
+            const resCard = document.getElementById('res-card');
+            resCard.className = `card mb-5 shadow-sm border-${result.color}`;
+
+            const resBadge = document.getElementById('res-badge');
+            resBadge.className = `badge bg-${result.color}`;
+            resBadge.innerText = result.level;
+
+            document.getElementById('res-score').innerText = `${totalScore} / ${totalQuestions * 2}`;
+            document.getElementById('res-description').innerHTML = result.description;
+
+            const safetySec = document.getElementById('res-safety-plan');
+            if (totalScore >= 4) {
+                safetySec.classList.remove('d-none');
+                const safetyList = document.getElementById('safety-plan-list');
+                safetyList.innerHTML = '';
+                SAFETY_PLAN.forEach(step => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.innerHTML = step;
+                    safetyList.appendChild(li);
+                });
+            } else {
+                safetySec.classList.add('d-none');
+            }
+
+            const resourcesSec = document.getElementById('res-resources-section');
+            if (result.resources && result.resources.length > 0) {
+                resourcesSec.classList.remove('d-none');
+                const resList = document.getElementById('resources-list');
+                resList.innerHTML = '';
+                result.resources.forEach(r => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    li.innerHTML = `
+                        <div>
+                            <h5 class="mb-1">${r.name}</h5>
+                            <p class="mb-1 text-muted">${r.contact}</p>
+                        </div>
+                        <a href="${r.link}" class="btn btn-outline-${result.color}" target="_blank">
+                            Ver Directorio
+                        </a>
+                    `;
+                    resList.appendChild(li);
+                });
+            } else {
+                resourcesSec.classList.add('d-none');
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('view-results').classList.add('d-none');
+            document.getElementById('view-home').classList.remove('d-none');
+        }
+    </script>
+</body>
+</html>
